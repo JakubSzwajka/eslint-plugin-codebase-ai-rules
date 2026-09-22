@@ -12,7 +12,7 @@ This repository contains a private GitHub package that extracts Hosti's comment-
 ## Contract
 
 - Package name and version stay `eslint-plugin-codebase-ai-rules@0.1.0` until an intentional release decision changes them.
-- The package is ESM, runs checked-in `.mjs` source directly, and supports Node `>=20`.
+- The package is ESM, runs checked-in `.mjs` source directly, and supports Node `^20.19.0 || ^22.13.0 || >=24.0.0`, matching the checked-in ESLint 10 toolchain.
 - `private: true` stays set. Do not npm-publish.
 - The plugin key is `codebase-ai-rules`.
 - `@typescript-eslint/parser` is a runtime dependency so consumers install no parser separately.

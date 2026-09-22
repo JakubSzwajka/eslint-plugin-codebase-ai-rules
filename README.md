@@ -1,6 +1,6 @@
 # eslint-plugin-codebase-ai-rules
 
-A small, private-GitHub-installable ESLint plugin with Hosti's comment-discipline rule. The package is ESM, runs directly from checked-in source, and supports Node 20 or newer.
+A small, private-GitHub-installable ESLint plugin with Hosti's comment-discipline rule. The package is ESM, runs directly from checked-in source, and supports `^20.19.0 || ^22.13.0 || >=24.0.0`, matching the ESLint 10 toolchain used by this repository.
 
 The package is marked `private` in `package.json`. That blocks accidental npm publication. It does not block installation from GitHub.
 
@@ -85,7 +85,7 @@ The exception list is closed. It covers syntax-owned directives only when they m
 
 ## Upgrade flow
 
-1. Review the package changelog in Git history and the diff between the current and candidate commit.
+1. Review the pinned commit diff and the rule documentation between the current and candidate commit.
 2. Update the Git commit pin in `package.json` and regenerate `package-lock.json` with `npm install`.
 3. Run `npm run check`, `npm run pack:check`, and the consuming project's `npx eslint .`.
 4. Merge the lockfile and config change together. Do not npm-publish this package.

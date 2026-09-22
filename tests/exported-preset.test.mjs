@@ -36,7 +36,7 @@ test("lints JavaScript, TypeScript, JSX, TSX, MJS, CJS, MTS, and CTS through ESL
     ["subject.mjs", "// SPDX-License-Identifier: MIT\nexport const value = 1;"],
     ["subject.cjs", "/* @preserve bundled notice */\nmodule.exports = 1;"],
     ["subject.mts", "/// <reference types=\"node\" />\nexport const value = 1;"],
-    ["subject.cts", "// @ts-check\nexport const value = 1;"],
+    ["subject.cts", "// @ts-check\nmodule.exports = { value: 1 };"],
   ];
 
   for (const [filePath, code] of fixtures) {
