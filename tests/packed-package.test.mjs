@@ -97,9 +97,8 @@ test("packs and installs the exact package before linting a fresh JS and TS fixt
     packageJson.dependencies["eslint-plugin-codebase-ai-rules"] = `file:${path.join(packageDirectory, packageArchive)}`;
     await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
 
-    // ESLint is installed at the version resolved by this repository's lockfile. npm ci populated the cache first,
-    // so --offline keeps this fixture from silently selecting a different toolchain or making a network request.
-    execFileSync("npm", ["install", "--offline", "--ignore-scripts", "--no-audit", "--no-fund"], {
+    // ESLint is installed at the exact version resolved by this repository's lockfile.
+    execFileSync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund"], {
       cwd: fixtureDirectory,
       stdio: "pipe",
     });
