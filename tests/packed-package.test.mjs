@@ -110,4 +110,3 @@ test("packs and installs the exact package before linting a fresh JS and TS fixt
     await rm(temporaryDirectory, { recursive: true, force: true });
   }
 });
-
