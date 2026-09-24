@@ -1,13 +1,15 @@
 import tsParser from "@typescript-eslint/parser";
 import { commentDisciplineRule } from "./comment-discipline.mjs";
+import { noBrokenRelativeLinksRule } from "./no-broken-relative-links.mjs";
 
 const plugin = {
   meta: {
     name: "eslint-plugin-codebase-ai-rules",
-    version: "0.1.0",
+    version: "0.2.0",
   },
   rules: {
     "comment-discipline": commentDisciplineRule,
+    "no-broken-relative-links": noBrokenRelativeLinksRule,
   },
   configs: {},
 };
