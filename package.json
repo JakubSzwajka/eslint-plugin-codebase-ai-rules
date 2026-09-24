@@ -1,8 +1,8 @@
 {
   "name": "eslint-plugin-codebase-ai-rules",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Focused ESLint rules for AI-assisted codebases: comment discipline for JS/TS and broken relative links in Markdown.",
+  "description": "Focused ESLint rules for AI-assisted codebases: comment discipline for JS/TS, broken relative links in Markdown, and design-token checks for CSS and JS/TS.",
   "license": "MIT",
   "type": "module",
   "files": [
@@ -20,21 +20,29 @@
     "./markdown": {
       "import": "./src/markdown.mjs",
       "default": "./src/markdown.mjs"
+    },
+    "./design": {
+      "import": "./src/design.mjs",
+      "default": "./src/design.mjs"
     }
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "npm test && node --check src/index.mjs && node --check src/markdown.mjs && node --check src/comment-discipline.mjs && node --check src/comment-directives.mjs && node --check src/comment-ranges.mjs && node --check src/no-broken-relative-links.mjs && node --check src/relative-links.mjs && node --check src/repository-paths.mjs",
+    "check": "npm test && node --check src/index.mjs && node --check src/markdown.mjs && node --check src/design.mjs && node --check src/comment-discipline.mjs && node --check src/comment-directives.mjs && node --check src/comment-ranges.mjs && node --check src/no-broken-relative-links.mjs && node --check src/relative-links.mjs && node --check src/repository-paths.mjs && node --check src/colors.mjs && node --check src/css-values.mjs && node --check src/design-tokens.mjs && node --check src/file-globs.mjs && node --check src/design-no-raw-color.mjs && node --check src/design-no-raw-color-literal.mjs && node --check src/design-no-unknown-token.mjs && node --check src/design-scale-value.mjs",
     "pack:check": "npm pack --dry-run"
   },
   "engines": {
     "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
   },
   "peerDependencies": {
+    "@eslint/css": "^2.0.0",
     "@eslint/markdown": "^8.0.3",
     "eslint": ">=9"
   },
   "peerDependenciesMeta": {
+    "@eslint/css": {
+      "optional": true
+    },
     "@eslint/markdown": {
       "optional": true
     }
@@ -43,6 +51,7 @@
     "@typescript-eslint/parser": "^8.70.1"
   },
   "devDependencies": {
+    "@eslint/css": "^2.0.0",
     "@eslint/markdown": "^8.0.3",
     "eslint": "^10.11.0"
   },

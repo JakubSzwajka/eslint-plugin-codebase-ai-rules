@@ -1,0 +1,38 @@
+.plate-bars i {
+  flex: 1;
+  max-width: 42px;
+  border-radius: 2px 2px 0 0;
+  background: #c5cdcf;
+}
+.plate-path {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.shot-frame {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  border: 0;
+  transform-origin: top left;
+  background: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t) ease-in;
+}
+.shot[data-live] .shot-frame {
+  opacity: 1;
+}
+.shot[data-live]::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 0;
+  height: 48px;
+  background: linear-gradient(to bottom, rgba(248, 253, 255, 0), var(--card) 82%);
+  pointer-events: none;
+}
+.drop[data-over] {
+  border-color: var(--pop);
+  background: #e8f4f5;
+}

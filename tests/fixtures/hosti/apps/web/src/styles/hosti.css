@@ -1,0 +1,56 @@
+:root {
+  --paper: #ecf2f3;
+  --card: #f8fdff;
+  --surface: #dee4e5;
+  --ink: #2b3133;
+  /* 5.0:1 on paper, 5.5:1 on card. Most small type here is muted, so it has
+     to clear AA on both grounds rather than scrape past it on one. */
+  --muted: #61686a;
+  --line: #c9cfd0;
+  --line-soft: #dde3e4;
+  --pop: #06707e;
+  --pop-wash: #e4f0f1;
+  --danger: #8a2b14;
+  /* One rhythm for every gap on every screen. */
+  --gap: 22px;
+  --gap-lg: 34px;
+  --radius: 10px;
+  /* One duration for every transition, so reduced motion is one override. */
+  --t: 140ms;
+  --font-serif: Fraunces, Superclarendon, "Bookman Old Style", Georgia, serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+}
+
+body {
+  margin: 0;
+  padding: 0 0 96px;
+  background-color: var(--paper);
+  background-image: radial-gradient(circle at 1px 1px, rgba(43, 49, 51, 0.08) 1px, transparent 0);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+::selection {
+  background: #bfe0e3;
+  color: var(--ink);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #b3bbbd transparent;
+}
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-thumb {
+  background: #b3bbbd;
+  border: 3px solid var(--paper);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #98a2a4;
+}

@@ -1,15 +1,23 @@
 import tsParser from "@typescript-eslint/parser";
 import { commentDisciplineRule } from "./comment-discipline.mjs";
+import { designNoRawColorLiteralRule } from "./design-no-raw-color-literal.mjs";
+import { designNoRawColorRule } from "./design-no-raw-color.mjs";
+import { designNoUnknownTokenRule } from "./design-no-unknown-token.mjs";
+import { designScaleValueRule } from "./design-scale-value.mjs";
 import { noBrokenRelativeLinksRule } from "./no-broken-relative-links.mjs";
 
 const plugin = {
   meta: {
     name: "eslint-plugin-codebase-ai-rules",
-    version: "0.2.0",
+    version: "0.3.0",
   },
   rules: {
     "comment-discipline": commentDisciplineRule,
     "no-broken-relative-links": noBrokenRelativeLinksRule,
+    "design-no-raw-color": designNoRawColorRule,
+    "design-no-raw-color-literal": designNoRawColorLiteralRule,
+    "design-no-unknown-token": designNoUnknownTokenRule,
+    "design-scale-value": designScaleValueRule,
   },
   configs: {},
 };

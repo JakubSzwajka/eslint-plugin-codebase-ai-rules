@@ -18,7 +18,7 @@ async function lint(code, filePath) {
 test("exports plugin metadata and a flat preset for every supported extension", () => {
   assert.deepEqual(plugin.meta, {
     name: "eslint-plugin-codebase-ai-rules",
-    version: "0.2.0",
+    version: "0.3.0",
   });
   assert.deepEqual(plugin.configs.recommended[0].files, [
     "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}",

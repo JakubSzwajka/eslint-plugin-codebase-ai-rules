@@ -1,0 +1,24 @@
+:root {
+  --paper: #ecf2f3;
+  --card: #f8fdff;
+  --surface: #dee4e5;
+  --ink: #2b3133;
+  --muted: #61686a;
+  --line: #c9cfd0;
+  --line-soft: #dde3e4;
+  --pop: #06707e;
+  --pop-wash: #e4f0f1;
+  --danger: #8a2b14;
+  --gap: 22px;
+  --gap-lg: 34px;
+  --radius: 10px;
+  --t: 140ms;
+  --font-serif: Fraunces, Superclarendon, "Bookman Old Style", Georgia, serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+}
+
+::selection {
+  background: #bfe0e3;
+  color: var(--ink);
+}

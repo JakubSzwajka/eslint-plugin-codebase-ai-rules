@@ -18,6 +18,7 @@ async function writeFixtureFiles(fixtureDirectory) {
         private: true,
         type: "module",
         dependencies: {
+          "@eslint/css": lockedPackages["node_modules/@eslint/css"].version,
           "@eslint/markdown": lockedPackages["node_modules/@eslint/markdown"].version,
           eslint: lockedPackages["node_modules/eslint"].version,
         },
@@ -29,7 +30,7 @@ async function writeFixtureFiles(fixtureDirectory) {
 
   await writeFile(
     path.join(fixtureDirectory, "eslint.config.mjs"),
-    'import codebaseAiRules from "eslint-plugin-codebase-ai-rules";\nimport codebaseAiMarkdown from "eslint-plugin-codebase-ai-rules/markdown";\n\nexport default [\n  ...codebaseAiRules.configs.recommended,\n  ...codebaseAiMarkdown,\n];\n',
+    'import codebaseAiRules from "eslint-plugin-codebase-ai-rules";\nimport design from "eslint-plugin-codebase-ai-rules/design";\nimport codebaseAiMarkdown from "eslint-plugin-codebase-ai-rules/markdown";\n\nexport default [\n  ...codebaseAiRules.configs.recommended,\n  ...codebaseAiMarkdown,\n  ...design({\n    tokenFiles: ["styles/tokens.css"],\n    source: { files: ["**/*.tsx"] },\n    rules: { "design-scale-value": [{ property: "radius$", allowed: ["4px"] }] },\n  }),\n];\n',
   );
   await writeFile(
     path.join(fixtureDirectory, "pass.js"),
@@ -45,6 +46,15 @@ async function writeFixtureFiles(fixtureDirectory) {
   await writeFile(path.join(fixtureDirectory, "pass.md"), "# Pass\n\nRead the [guide](docs/guide.md).\n");
   await writeFile(path.join(fixtureDirectory, "docs", "guide.md"), "# Guide\n\nBack to [pass](../pass.md).\n");
   await writeFile(path.join(fixtureDirectory, "fail.md"), "# Fail\n\nSee [missing](./missing.md) and [case](./PASS.md).\n");
+  await mkdir(path.join(fixtureDirectory, "styles"));
+  await writeFile(path.join(fixtureDirectory, "styles", "tokens.css"), ":root {\n  --ink: #2b3133;\n  --paper: #ecf2f3;\n}\n");
+  await writeFile(path.join(fixtureDirectory, "styles", "pass.css"), "a {\n  color: var(--ink);\n  border-radius: 4px;\n}\n");
+  await writeFile(
+    path.join(fixtureDirectory, "styles", "fail.css"),
+    "a {\n  --local: #fff;\n  color: #2c3234;\n  background: var(--missing);\n  border-radius: 5px;\n}\n",
+  );
+  await writeFile(path.join(fixtureDirectory, "pass.tsx"), 'export const A = () => <a href="#fade">&#8599;</a>;\n');
+  await writeFile(path.join(fixtureDirectory, "fail.tsx"), 'export const A = () => <div style={{ color: "#2b3133" }} />;\n');
 
   await writeFile(
     path.join(fixtureDirectory, "verify-install.mjs"),
@@ -56,6 +66,7 @@ assert.equal(codebaseAiRules.meta.name, "eslint-plugin-codebase-ai-rules");
 assert.equal(codebaseAiRules.configs.recommended[0].rules["codebase-ai-rules/comment-discipline"], "error");
 assert.match(import.meta.resolve("eslint-plugin-codebase-ai-rules"), /node_modules/);
 assert.match(import.meta.resolve("eslint-plugin-codebase-ai-rules/markdown"), /node_modules/);
+assert.match(import.meta.resolve("eslint-plugin-codebase-ai-rules/design"), /node_modules/);
 assert.equal(codebaseAiRules.meta.version, ${JSON.stringify(packageVersion)});
 
 const eslint = new ESLint({ cwd: process.cwd(), overrideConfigFile: "eslint.config.mjs" });
@@ -98,11 +109,32 @@ assert.deepEqual(
     { ruleId: "codebase-ai-rules/no-broken-relative-links", line: 3, column: 33 },
   ],
 );
+
+const designPassing = await eslint.lintFiles(["styles/tokens.css", "styles/pass.css", "pass.tsx"]);
+assert.deepEqual(
+  designPassing.map(({ messages }) => messages.map(({ message }) => message)),
+  [[], [], []],
+);
+
+const [designFailing, sourceFailing] = await eslint.lintFiles(["styles/fail.css", "fail.tsx"]);
+assert.deepEqual(
+  designFailing.messages.map(({ ruleId, line, message }) => ({ ruleId, line, message })),
+  [
+    { ruleId: "codebase-ai-rules/design-no-raw-color", line: 2, message: 'Raw colour "#fff". Use a design token; the nearest is var(--paper).' },
+    { ruleId: "codebase-ai-rules/design-no-raw-color", line: 3, message: 'Raw colour "#2c3234". Use a design token; the nearest is var(--ink).' },
+    { ruleId: "codebase-ai-rules/design-no-unknown-token", line: 4, message: "var(--missing) has no definition in the token files or in this file." },
+    { ruleId: "codebase-ai-rules/design-scale-value", line: 5, message: 'border-radius "5px" has values off the scale: 5px. Allowed: 4px.' },
+  ],
+);
+assert.deepEqual(
+  sourceFailing.messages.map(({ ruleId, line }) => ({ ruleId, line })),
+  [{ ruleId: "codebase-ai-rules/design-no-raw-color-literal", line: 1 }],
+);
 `,
   );
 }
 
-test("packs and installs the exact package before linting fresh JS, TS, and Markdown fixtures", async () => {
+test("packs and installs the exact package before linting fresh JS, TS, Markdown, and design fixtures", async () => {
   const temporaryDirectory = await mkdtemp(path.join(os.tmpdir(), "codebase-ai-rules-pack-"));
   const packageDirectory = path.join(temporaryDirectory, "package");
   const fixtureDirectory = path.join(temporaryDirectory, "fixture");

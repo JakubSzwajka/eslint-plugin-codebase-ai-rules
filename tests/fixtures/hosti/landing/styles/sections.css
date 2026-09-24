@@ -1,0 +1,26 @@
+.bundle-content {
+  --bundle-bg: #fff8ed;
+  --bundle-ink: #1a2730;
+  --bundle-muted: #68747a;
+  --bundle-line: #d8d4c9;
+  --bundle-accent: #e76445;
+  --bundle-accent-soft: #f6d3c6;
+  --bundle-blue: #2d6179;
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 18px;
+  padding: clamp(20px, 4vw, 32px) clamp(20px, 4.4vw, 36px);
+  background: var(--bundle-bg);
+  color: var(--bundle-ink);
+  transition:
+    opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 420ms linear;
+}
+
+.chart-bars i {
+  width: 100%;
+  height: var(--bar);
+  background: linear-gradient(to top, var(--bundle-blue) 0 66%, var(--bundle-accent) 66% 100%);
+}
