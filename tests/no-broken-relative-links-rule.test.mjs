@@ -170,6 +170,45 @@ test("git ls-files runs once per repository root while the index is unchanged", 
   }
 });
 
+// Git hooks export an absolute GIT_DIR; in a linked worktree it points at `.git/worktrees/<name>`.
+test("a linked worktree linted with GIT_DIR set, as in a git hook, resolves links from the worktree root", () => {
+  const main = createGitRepository({ tracked: { "README.md": "# Readme\n", "docs/guide.md": "# Guide\n" } });
+  const worktree = path.join(createDirectory("codebase-ai-rules-worktree-"), "wt");
+  const saved = { GIT_DIR: process.env.GIT_DIR, GIT_WORK_TREE: process.env.GIT_WORK_TREE };
+  try {
+    const git = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: "pipe" });
+    git(main, "-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "--quiet", "-m", "init");
+    git(main, "worktree", "add", "--quiet", "-b", "wt", worktree);
+    const gitDir = git(worktree, "rev-parse", "--absolute-git-dir").trim();
+    assert.match(gitDir, /[/\\]worktrees[/\\]wt$/);
+    // draft.md exists but is untracked: only a git-backed check reports it.
+    writeFiles(worktree, { "docs/page.md": "", "docs/api/page.md": "", "docs/draft.md": "# Draft\n" });
+
+    // Each case lints a different folder so the per-directory top-level cache cannot hide a failure.
+    const cases = [
+      [{ GIT_DIR: gitDir }, "docs/page.md", "[r](../README.md) [g](./guide.md) [d](./draft.md) [m](./missing.md)", ["1:./draft.md", "1:./missing.md"]],
+      [
+        { GIT_DIR: gitDir, GIT_WORK_TREE: worktree },
+        "docs/api/page.md",
+        "[r](../../README.md) [g](../guide.md) [d](../draft.md) [m](./missing.md)",
+        ["1:../draft.md", "1:./missing.md"],
+      ],
+    ];
+    for (const [env, file, markdownText, broken] of cases) {
+      delete process.env.GIT_WORK_TREE;
+      Object.assign(process.env, env);
+      assert.deepEqual(brokenTargets(lintMarkdown(worktree, file, markdownText)), broken, JSON.stringify(env));
+    }
+  } finally {
+    for (const [name, value] of Object.entries(saved)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+    removeDirectory(path.dirname(worktree));
+    removeDirectory(main);
+  }
+});
+
 test("outside a git repository the rule checks the file system under cwd with exact case", () => {
   const plain = createDirectory("codebase-ai-rules-plain-");
   try {
